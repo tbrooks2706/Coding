@@ -1,9 +1,6 @@
 import general_functions
 import copy
 
-init_list = general_functions.read_file(r"C:\Users\Tom.Brooks\OneDrive - BJSS Ltd\Documents\Coding\Coding\AoC-2021\Day_3.txt")
-test_list = general_functions.read_file(r"C:\Users\Tom.Brooks\OneDrive - BJSS Ltd\Documents\Coding\Coding\AoC-2021\Day_3_test.txt")
-
 class Column:
     def __init__(self, input_list, index) -> None:
         self.input_list = input_list
@@ -49,6 +46,9 @@ def find_rating(input_list, search_type):
         column_index += 1
         new_list = temp_list
     return new_list[0]
+
+init_list = general_functions.read_file(r"C:\Users\Tom.Brooks\OneDrive - BJSS Ltd\Documents\Coding\Coding\AoC-2021\Day_3.txt")
+test_list = general_functions.read_file(r"C:\Users\Tom.Brooks\OneDrive - BJSS Ltd\Documents\Coding\Coding\AoC-2021\Day_3_test.txt")
 
 #answer part 1
 binary_list = compile_binaries(init_list)
