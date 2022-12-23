@@ -25,3 +25,10 @@ def create_blank_list(char, num_of_chars):
     for x in range(num_of_chars):
         new_list.append(char)
     return new_list
+
+def check_for_duplicates(input_list):
+    duplicates = len(input_list) - len(set(input_list))
+    if duplicates == 0:
+        return "No duplicates"
+    else:
+        return "{num} duplicates".format(num = duplicates)
