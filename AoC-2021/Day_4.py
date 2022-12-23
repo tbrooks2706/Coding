@@ -1,7 +1,8 @@
 import general_functions
+import copy
 
-init_list = general_functions.read_file(r"C:\Users\Tom\OneDrive\Documents\Tom's Stuff\Hobbies\Coding\AoC-2021\Day_4.txt")
-test_list = general_functions.read_file(r"C:\Users\Tom\OneDrive\Documents\Tom's Stuff\Hobbies\Coding\AoC-2021\Day_4_test.txt")
+init_list = general_functions.read_file(r"C:\Users\Tom.Brooks\OneDrive - BJSS Ltd\Documents\Coding\Coding\AoC-2021\Day_4.txt")
+test_list = general_functions.read_file(r"C:\Users\Tom.Brooks\OneDrive - BJSS Ltd\Documents\Coding\Coding\AoC-2021\Day_4_test.txt")
 #print(test_list)
 draw_order = init_list[0].split(",")
 #print(general_functions.check_for_duplicates(draw_order))
@@ -28,16 +29,39 @@ class Board:
         return column_list
 
     def mark_board(self, number):
-        for row in self.row_list:
+        new_list = copy.deepcopy(self.row_list)
+        for row in new_list:
             for index in range(len(row)):
                 if row[index] == number:
                     row[index] = "#"+row[index]
-        return self.row_list
+        self.row_list = new_list
+        self.column_list = self.create_columns()
+    
+    def count_marked(self):
+        column_marked = []
+        row_marked = []
+        for column in self.column_list:
+            count = 0
+            for value in column:
+                if "#" in value:
+                    count += 1
+            column_marked.append(count)
+        for row in self.row_list:
+            count = 0
+            for value in row:
+                if "#" in value:
+                    count += 1
+            row_marked.append(count)
+        return [row_marked, column_marked]
 
 
 example_board = Board([['22', '13', '17', '11', '0'], ['8', '2', '23', '4', '24'], ['21', '9', '14', '16', '7'], ['6', '10', '3', '18', '5'], ['1', '12', '20', '15', '19']])
-print(example_board.mark_board("22"))
+example_board.mark_board("13")
+#print(example_board.column_list)
+print(example_board.count_marked())
 
+
+#not sure if we need this class
 class Number_Draw:
     def __init__(self, number, seq) -> None:
         self.number = number
