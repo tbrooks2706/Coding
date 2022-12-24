@@ -18,9 +18,9 @@ class Board:
     def __init__(self, row_list) -> None:
         self.row_list = row_list
         self.column_list = self.create_columns()
-        self.sum_total = self.sum_values()[0]
-        self.sum_unmarked = self.sum_values()[1]
-        self.sum_marked = self.sum_values()[2]
+        self.number_called = 0
+        self.seq = 0
+        self.score = 0
     
     def create_columns(self):
         column_list = []
@@ -39,6 +39,8 @@ class Board:
                     row[index] = "#"+row[index]
         self.row_list = new_list
         self.column_list = self.create_columns()
+        self.number_called = int(number)
+        self.seq += 1
     
     def count_marked(self):
         column_marked = []
@@ -61,7 +63,7 @@ class Board:
         sum = 0
         unmarked = 0
         marked = 0
-        print(self.row_list)
+        #print(self.column_list)
         for row in self.row_list:
             for value in row:
                 #print(value)
@@ -70,21 +72,20 @@ class Board:
                     sum += int(value)
                 else:
                     marked += int(value[1:])
-                    sum += int(value)
+                    sum += int(value[1:])
         return [sum, unmarked, marked]
 
-
 example_board = Board([['22', '13', '17', '11', '0'], ['8', '2', '23', '4', '24'], ['21', '9', '14', '16', '7'], ['6', '10', '3', '18', '5'], ['1', '12', '20', '15', '19']])
-example_board.mark_board("13")
-print(example_board.row_list)
-#print(example_board.count_marked())
-print("unmarked",example_board.sum_unmarked)
-print("marked",example_board.sum_marked)
-print("total",example_board.sum_total)
-
-#PROBLEM: the sum_values function is calling a version of row_list which isn't showing the markup
-#even though when you call row_list separately, it shows as marked
-#no idea why - need to figure this out
+for num in ["1", "21", "17", "2"]:
+    example_board.mark_board(num)
+#print(example_board.row_list)
+print(example_board.count_marked())
+print("unmarked",example_board.sum_values()[1])
+print("marked",example_board.sum_values()[2])
+print("total",example_board.sum_values()[0])
+print("seq",example_board.seq)
+print("number called",example_board.number_called)
+print("score",example_board.number_called * example_board.sum_values()[1])
 
 #not sure if we need this class
 class Number_Draw:
@@ -94,5 +95,11 @@ class Number_Draw:
 
 #for each number draw
     #go through entire list, and mark each board
-    #check number marked, if any 5, break
+    #check number marked on each board, if any 5, break
+    #for that board, output sum unmarked * number most recently called
+#OR
+#for each board
+    #go through number list, mark board while no row or column = 5
+    #when loop finished, do next board
+#then find board which has the lowest seq value, and output score for it
 
