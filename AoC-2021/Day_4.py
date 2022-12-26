@@ -150,7 +150,33 @@ def get_winning_board(draw_list, board_list):
             break
     return {"board start": winning_board, "score": winning_score}
 
+def get_losing_board(draw_list, board_list):
+    start_points = Boards_List(board_list).board_starts
+    end_now = False
+    losing_board = 0
+    completed_boards = []
+    for draw in draw_list:
+        this_draw = Number_Draw(draw)
+        this_draw.mark_all_numbers(board_list)
+        for num in range(len(board_list)):
+            print(num)
+            if (num in start_points) and (num not in completed_boards):
+                this_board = Board(board_list[num:num+5])
+                if this_board.count_marked()[2] == True:
+                    completed_boards.append([num, draw])
+                    print(completed_boards)
+                    print(start_points)
+                    continue
+                    #end_now = True
+        if len(completed_boards) == len(start_points):
+            break
+    losing_board = completed_boards[-1]
+    #new_board = Board(board_list[losing_board:losing_board+5])
+    #losing_score = new_board.sum_values()[1] * int(draw)
+    #return {"board start": losing_board, "score": losing_score}
+
 winning_board = get_winning_board(draw_order, boards)
+losing_board = get_losing_board(draw_order, boards)
 #answer to part 1
 print(winning_board)
 
