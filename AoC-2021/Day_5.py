@@ -1,14 +1,11 @@
 import general_functions
-import copy
-
-init_list = general_functions.read_file(r"C:\Users\Tom\OneDrive\Documents\Tom's Stuff\Hobbies\Coding\AoC-2021\Day_5.txt")
-test_list = general_functions.read_file(r"C:\Users\Tom\OneDrive\Documents\Tom's Stuff\Hobbies\Coding\AoC-2021\Day_5_test.txt")
 
 class Grid:
     def __init__(self, width, height) -> None:
         self.grid = general_functions.create_grid(width, height)
         self.width = width
         self.height = height
+        self.intersections = 0
 
     def mark_point(self, coordinates):
         x = coordinates[0]
@@ -17,12 +14,14 @@ class Grid:
             self.grid[x][y] = 1
         else:
             self.grid[x][y] += 1
-        
-working_grid = Grid(10, 10)
-working_grid.mark_point([0,2])
-working_grid.mark_point([7,0])
-print(working_grid.grid)
-
+    
+    def count_intersections(self):
+        intersections = 0
+        for column in self.grid:
+            for point in column:
+                if (type(point) == int) and (point > 1):
+                    intersections += 1
+        return intersections
 
 class Line:
     def __init__(self, points) -> None:
@@ -30,6 +29,7 @@ class Line:
         self.start_y = min(points[1], points[3])
         self.end_x = max(points[0], points[2])
         self.end_y = max(points[1], points[3])
+        self.input_points = points
         self.is_diagonal = self.set_direction()[0]
         self.is_horizontal = self.set_direction()[1]
         self.is_vertical = self.set_direction()[2]
@@ -52,15 +52,44 @@ class Line:
         if self.is_horizontal == True:
             for num in range(self.start_x, self.end_x + 1):
                 points_list.append([num, self.start_y])
-        if self.is_vertical == True:
+        elif self.is_vertical == True:
             for num in range(self.start_y, self.end_y + 1):
-                points_list.append([num, self.start_x])
+                points_list.append([self.start_x, num])
+        else:
+            #diagonals
+            if (self.input_points[0] < self.input_points[2]) and (self.input_points[1] < self.input_points[3]):
+            #top left to bottom right - normal
+                x = self.input_points[0]
+                y = self.input_points[1]
+                for num in range(self.input_points[0], self.input_points[2] + 1):
+                    points_list.append([x, y])
+                    x += 1
+                    y += 1
+            elif (self.input_points[0] > self.input_points[2]) and (self.input_points[1] > self.input_points[3]):
+            #top left to bottom right - reversed
+                x = self.input_points[2]
+                y = self.input_points[3]
+                for num in range(self.input_points[2], self.input_points[0] + 1):
+                    points_list.append([x, y])
+                    x += 1
+                    y += 1
+            elif (self.input_points[0] > self.input_points[2]) and (self.input_points[1] < self.input_points[3]):
+            #top right to bottom left - normal
+                x = self.input_points[0]
+                y = self.input_points[1]
+                for num in range(self.input_points[1], self.input_points[3] + 1):
+                    points_list.append([x, y])
+                    x -= 1
+                    y += 1
+            else:
+            #top right to bottom left - reversed
+                x = self.input_points[0]
+                y = self.input_points[1]
+                for num in range(self.input_points[0], self.input_points[2] + 1):
+                    points_list.append([x, y])
+                    x += 1
+                    y -= 1
         return points_list
-
-example_line = Line([7,0,7,4])
-#print(example_line.is_horizontal)
-#print(example_line.start_y)
-#print(example_line.find_points_on_line())
 
 def format_list(input_list):
     new_list = []
@@ -84,16 +113,26 @@ def remove_diagonals(input_list):
         if this_line.is_diagonal == False:
             new_list.append(line)
     return new_list
-
-working_list = format_list(test_list)
-#print(working_list)
-filtered_list = remove_diagonals(working_list)
-print(filtered_list)
         
-#then mark lines on grid
 def mark_lines(input_grid, list_of_lines):
     for line in list_of_lines:
         this_line = Line(line)
+        for point in this_line.points_list:
+            input_grid.mark_point(point)
 
+#execute code
+init_list = general_functions.read_file(r"C:\Users\Tom\OneDrive\Documents\Tom's Stuff\Hobbies\Coding\AoC-2021\Day_5.txt")
+test_list = general_functions.read_file(r"C:\Users\Tom\OneDrive\Documents\Tom's Stuff\Hobbies\Coding\AoC-2021\Day_5_test.txt")
+working_list = format_list(init_list)
+filtered_list = remove_diagonals(working_list)
+test_grid = Grid(10, 10)        
+grid_part_one = Grid(1000, 1000)
+grid_part_two = Grid(1000, 1000)
+mark_lines(grid_part_one, filtered_list)
+mark_lines(grid_part_two, working_list)
 
-#count number of points >1
+#answer part 1
+print(grid_part_one.count_intersections())
+
+#answer part 2
+print(grid_part_two.count_intersections())
