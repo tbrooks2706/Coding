@@ -32,3 +32,19 @@ def check_for_duplicates(input_list):
         return "No duplicates"
     else:
         return "{num} duplicates".format(num = duplicates)
+
+def print_grid(input_list, rotate=False):
+    if rotate == True:
+        #exactly right
+        for num in range(len(input_list[0])):
+            row_string = ""
+            for column in input_list:
+                row_string += str(column[num])
+            print(row_string)
+    else:
+        #does this print it out flipped as well as rotated?
+        for row in input_list:
+            row_string = ""
+            for column in row:
+                row_string += str(column)
+            print(row_string)
