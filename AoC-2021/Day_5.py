@@ -47,6 +47,7 @@ class Line:
             is_horizontal = True
         return [is_diagonal, is_horizontal, is_vertical]
     
+    #returns list of x,y points that will be marked for this line
     def find_points_on_line(self):
         points_list = []
         if self.is_horizontal == True:
@@ -91,6 +92,7 @@ class Line:
                     y -= 1
         return points_list
 
+#converts input list of strings into usable nested lists of integers
 def format_list(input_list):
     new_list = []
     final_list = []
@@ -106,6 +108,7 @@ def format_list(input_list):
         final_list.append(temp_list)
     return final_list
 
+#returns a new list with horizontal and vertical lines only
 def remove_diagonals(input_list):
     new_list = []
     for line in input_list:
@@ -113,7 +116,8 @@ def remove_diagonals(input_list):
         if this_line.is_diagonal == False:
             new_list.append(line)
     return new_list
-        
+
+#marks all lines on a given grid        
 def mark_lines(input_grid, list_of_lines):
     for line in list_of_lines:
         this_line = Line(line)
