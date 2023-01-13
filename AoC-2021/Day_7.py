@@ -1,13 +1,4 @@
 import general_functions
-import datetime
-
-init_list = general_functions.read_file(r"C:\Users\Tom\OneDrive\Documents\Tom's Stuff\Hobbies\Coding\AoC-2021\Day_7.txt")
-test_list = general_functions.read_file(r"C:\Users\Tom\OneDrive\Documents\Tom's Stuff\Hobbies\Coding\AoC-2021\Day_7_test.txt")
-
-def format_list(input_list):
-    return [int(x.strip()) for x in input_list[0].split(",")]
-
-working_list = format_list(test_list)
 
 #numbers in input are horizontal position of each crab
 #they can only move horizontally
@@ -46,6 +37,9 @@ class Position:
             total += self.find_crab_fuel(crab, method)         
         return total
 
+def format_list(input_list):
+    return [int(x.strip()) for x in input_list[0].split(",")]
+
 def find_all_fuels(input_list, method):
     fuel_dict = {}
     sorted_list = sorted(input_list)
@@ -65,6 +59,11 @@ def find_lowest_fuel(input_dict):
         if value == lowest_fuel:
             return [key, value]
 
+#execute code
+init_list = general_functions.read_file(r"C:\Users\Tom\OneDrive\Documents\Tom's Stuff\Hobbies\Coding\AoC-2021\Day_7.txt")
+test_list = general_functions.read_file(r"C:\Users\Tom\OneDrive\Documents\Tom's Stuff\Hobbies\Coding\AoC-2021\Day_7_test.txt")
+working_list = format_list(test_list)
+
 #part 1
 full_dictionary_1 = find_all_fuels(working_list, "standard")
 lowest = find_lowest_fuel(full_dictionary_1)
@@ -74,8 +73,3 @@ print(lowest)
 full_dictionary_2 = find_all_fuels(working_list, "increasing")
 lowest2 = find_lowest_fuel(full_dictionary_2)
 print(lowest2)
-
-
-
-
-        
