@@ -15,32 +15,15 @@ import general_functions
     #len 2: 1, len 3: 7, len 4: 4, len 7: 8
     #len 5: 2, 3, 5, len 6: 6, 9, 0
 
-#part 1: how many times do 1,4,7,8 (the easy ones) occur in the output values?
-
-#part 2
-#you can work out what the pattern looks like by analysing the result of those four numbers
-#in this order:
-    #bottom left (in 4 patterns) = only letter in exactly 4 patterns
-    #bottom right (in 9 patterns, all except 2) = only letter in exactly 9 patterns
-    #top right (in 8 patterns) = in 1, and is not bottom right
-    #top (in 8 patterns) = in 7 and 8, not in 1 or 4
-    #top left (in 6 patterns) = in 8 and 4, not in 1 or 7
-    #bottom (in 7 patterns) = is in exactly 7 patterns, and only in one of 1478
-    #middle (in 7 patterns) = is in exactly 7 patterns, and in >1 one of 1478
 
 with open(r"C:\Users\Tom.Brooks\OneDrive - BJSS Ltd\Documents\Coding\Coding\AoC-2021\Day_8.txt") as nickname:
     working_list = [line.split() for line in nickname]     
-#print(working_list)
-
-part2_example = "acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf".split()
-#print(part2_example)
 
 class Letter:
     def __init__(self, input_list, letter) -> None:
         self.letter = letter
         self.patterns = input_list
         self.in_patterns = self.check_in_numbers()
-        #self.in_unique_patterns = 0
     
     def check_in_numbers(self):
         count = 0
@@ -48,10 +31,6 @@ class Letter:
             if self.letter in string:
                 count += 1
         return count
-
-example_letter = Letter(['acedgfb', 'cdfbe', 'gcdfa', 'fbcad', 'dab', 'cefabd', 'cdfgeb', 'eafb', 'cagedb', 'ab'], "e")
-#print("Letter:")
-#print(example_letter.in_patterns)
 
 class SignalPattern:
     def __init__(self, string, numbers_dict) -> None:
@@ -63,24 +42,12 @@ class SignalPattern:
         self.is_unique = self.digit in [1, 4, 7, 8]
     
     def return_number(self):
-    ############THEN retest Display.output_digits_string - should always be 4 digits######################
-    ############THEN build a function to do the final step in answer to part 2#################
         #initial lookup based on len for 1478 - these need to be identifiable independent of self.lookup because they are the basis for it
         if self.len in self.len_dict.keys():
             return self.len_dict[self.len]
-        #then base the rest on self.lookup
-        ########THIS BIT IS THE PROBLEM################
-        #it's testing string (which is from output codes second half) against lookup (which is from 10 patterns, first half)
-        #output code DOESNT need to EXACTLY match
-            #the test is whether output code contains exactly the same letters as one of the values in lookup, in ANY ORDER
-            #so output codes of cdfe, efcd and fdce would all match a single lookup entry of cfde
         for key, value in self.lookup.items():
             if sorted(self.string) == sorted(value):
                 return key
-
-example_pattern = SignalPattern("cdfgeb", {0: 'cagedb', 1: 'ab', 2: 'gcdfa', 3: 'fbcad', 4: 'eafb', 5: 'cdfbe', 6: 'cdfgeb', 7: 'dab', 8: 'acedgfb', 9: 'cefabd'})
-#print("Pattern:")
-#print(example_pattern.digit)
 
 class Display:
     def __init__(self, input_list) -> None:
@@ -100,15 +67,12 @@ class Display:
         self.numbers = {2: self.two, 3: self.three, 5: self.five, 0: self.zero, 9: self.nine, 6: self.six}
         self.assign_rest()
         self.unique_occurrences = self.count_unique_occurrences()
-        self.output_digits_list = self.find_output_digits()[0]
+        #self.output_digits_list = self.find_output_digits()[0]
         self.output_digits_string = self.find_output_digits()[1]
-        #print(self.output_digits_string)
     
     def count_unique_occurrences(self):
         count = 0
         for string in self.output_codes:
-            #print(string)
-            #print(self.digits) - this is the problem
             this_pattern = SignalPattern(string, self.digits)
             if this_pattern.is_unique == True:
                 count += 1
@@ -169,14 +133,6 @@ class Display:
                     if letter_match == True:
                         self.digits[key] = string
                         break
-        #print(self.digits)
-
-example_display = Display(part2_example)
-#print("Display:")
-#print(example_display.patterns_list)
-#print(example_display.digits)
-#print(example_display.positions)
-#print(example_display.numbers)
 
 def count_all_unique(input_list):
     count = 0
@@ -192,11 +148,12 @@ def sum_all_outputs(input_list):
         sum += int(this_display.output_digits_string)
     return sum
 
-
+#part 1: how many times do 1,4,7,8 (the easy ones) occur in the output values?
 #answer part 1
 unique_count = count_all_unique(working_list)
 print(unique_count)
 
+#part 2: what is the sum of all output codes
 #answer part 2
 output_sum = sum_all_outputs(working_list)
 print(output_sum)
