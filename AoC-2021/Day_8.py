@@ -1,5 +1,4 @@
-import general_functions
-
+#THE PROBLEM
 #multiple four digit displays
 #each display is made up of digits
 #each digit is made up of 7 segments, turned off or on to produce a visual digit
@@ -13,11 +12,8 @@ import general_functions
 #you can work out which digit is which for SOME just by looking at the length of the string
     #1=2, 2=5, 3=5, 4=4, 5=5, 6=6, 7=3, 8=7, 9=6, 0=6
     #len 2: 1, len 3: 7, len 4: 4, len 7: 8
+#for the rest you have to use logic based on which segments appear in which letters
     #len 5: 2, 3, 5, len 6: 6, 9, 0
-
-
-with open(r"C:\Users\Tom.Brooks\OneDrive - BJSS Ltd\Documents\Coding\Coding\AoC-2021\Day_8.txt") as nickname:
-    working_list = [line.split() for line in nickname]     
 
 class Letter:
     def __init__(self, input_list, letter) -> None:
@@ -45,6 +41,7 @@ class SignalPattern:
         #initial lookup based on len for 1478 - these need to be identifiable independent of self.lookup because they are the basis for it
         if self.len in self.len_dict.keys():
             return self.len_dict[self.len]
+        #lookup the rest from logic-based dictionary
         for key, value in self.lookup.items():
             if sorted(self.string) == sorted(value):
                 return key
@@ -67,7 +64,6 @@ class Display:
         self.numbers = {2: self.two, 3: self.three, 5: self.five, 0: self.zero, 9: self.nine, 6: self.six}
         self.assign_rest()
         self.unique_occurrences = self.count_unique_occurrences()
-        #self.output_digits_list = self.find_output_digits()[0]
         self.output_digits_string = self.find_output_digits()[1]
     
     def count_unique_occurrences(self):
@@ -148,6 +144,9 @@ def sum_all_outputs(input_list):
         sum += int(this_display.output_digits_string)
     return sum
 
+with open(r"C:\Users\Tom.Brooks\OneDrive - BJSS Ltd\Documents\Coding\Coding\AoC-2021\Day_8.txt") as nickname:
+    working_list = [line.split() for line in nickname]     
+
 #part 1: how many times do 1,4,7,8 (the easy ones) occur in the output values?
 #answer part 1
 unique_count = count_all_unique(working_list)
@@ -157,7 +156,3 @@ print(unique_count)
 #answer part 2
 output_sum = sum_all_outputs(working_list)
 print(output_sum)
-
-
-
-
