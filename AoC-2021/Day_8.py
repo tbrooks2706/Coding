@@ -28,23 +28,19 @@ import general_functions
     #bottom (in 7 patterns) = is in exactly 7 patterns, and only in one of 1478
     #middle (in 7 patterns) = is in exactly 7 patterns, and in >1 one of 1478
 
-with open(r"C:\Users\Tom.Brooks\OneDrive - BJSS Ltd\Documents\Coding\Coding\AoC-2021\Day_8_test.txt") as nickname:
+with open(r"C:\Users\Tom.Brooks\OneDrive - BJSS Ltd\Documents\Coding\Coding\AoC-2021\Day_8.txt") as nickname:
     working_list = [line.split() for line in nickname]     
 #print(working_list)
 
 part2_example = "acedgfb cdfbe gcdfa fbcad dab cefabd cdfgeb eafb cagedb ab | cdfeb fcadb cdfeb cdbaf".split()
-print(part2_example)
+#print(part2_example)
 
 class Letter:
     def __init__(self, input_list, letter) -> None:
         self.letter = letter
         self.patterns = input_list
-        # self.in_1 = False
-        # self.in_4 = False
-        # self.in_7 = False
-        # self.in_8 = False
         self.in_patterns = self.check_in_numbers()
-        self.in_unique_patterns = 0
+        #self.in_unique_patterns = 0
     
     def check_in_numbers(self):
         count = 0
@@ -54,38 +50,43 @@ class Letter:
         return count
 
 example_letter = Letter(['acedgfb', 'cdfbe', 'gcdfa', 'fbcad', 'dab', 'cefabd', 'cdfgeb', 'eafb', 'cagedb', 'ab'], "e")
-print(example_letter.in_patterns)
+#print("Letter:")
+#print(example_letter.in_patterns)
 
 class SignalPattern:
-    def __init__(self, string) -> None:
+    def __init__(self, string, numbers_dict) -> None:
         self.string = string
+        self.lookup = numbers_dict
+        self.len_dict = {2: 1, 3: 7, 4: 4, 7: 8}
         self.len = len(string)
         self.digit = self.return_number()
         self.is_unique = self.digit in [1, 4, 7, 8]
     
     def return_number(self):
-        if self.len == 2:
-            return 1
-        elif self.len == 3:
-            return 7
-        elif self.len == 4:
-            return 4
-        elif self.len == 7:
-            return 8
-        else:
-            return "Unknown"
+    ############THEN retest Display.output_digits_string - should always be 4 digits######################
+    ############THEN build a function to do the final step in answer to part 2#################
+        #initial lookup based on len for 1478 - these need to be identifiable independent of self.lookup because they are the basis for it
+        if self.len in self.len_dict.keys():
+            return self.len_dict[self.len]
+        #then base the rest on self.lookup
+        ########THIS BIT IS THE PROBLEM################
+        #it's testing string (which is from output codes second half) against lookup (which is from 10 patterns, first half)
+        #output code DOESNT need to EXACTLY match
+            #the test is whether output code contains exactly the same letters as one of the values in lookup, in ANY ORDER
+            #so output codes of cdfe, efcd and fdce would all match a single lookup entry of cfde
+        for key, value in self.lookup.items():
+            if sorted(self.string) == sorted(value):
+                return key
 
-example_pattern = SignalPattern("abcd")
-#print(example_pattern.is_unique)
+example_pattern = SignalPattern("cdfgeb", {0: 'cagedb', 1: 'ab', 2: 'gcdfa', 3: 'fbcad', 4: 'eafb', 5: 'cdfbe', 6: 'cdfgeb', 7: 'dab', 8: 'acedgfb', 9: 'cefabd'})
+#print("Pattern:")
+#print(example_pattern.digit)
 
 class Display:
     def __init__(self, input_list) -> None:
         self.full_list = input_list
         self.output_codes = input_list[11:15]
         self.patterns_list = input_list[:10]
-        self.unique_occurrences = self.count_unique_occurrences()
-        self.output_digits_list = self.find_output_digits()[0]
-        self.output_digits_string = self.find_output_digits()[1]
         self.letters = "abcdefg"
         self.positions = {"top": "", "topleft": "", "topright": "", "middle": "", "bottomleft": "", "bottomright": "", "bottom": ""}
         self.digits = {0: "", 1: "", 2: "", 3: "", 4: "", 5: "", 6: "", 7: "", 8: "", 9: ""}
@@ -96,12 +97,19 @@ class Display:
         self.zero = [self.positions["top"], self.positions["topright"], self.positions["topleft"], self.positions["bottomright"], self.positions["bottomleft"], self.positions["bottom"]]
         self.nine = [self.positions["top"], self.positions["topleft"], self.positions["middle"], self.positions["bottomright"], self.positions["topright"], self.positions["bottom"]]
         self.six = [self.positions["top"], self.positions["topleft"], self.positions["middle"], self.positions["bottomright"], self.positions["bottomleft"], self.positions["bottom"]]
+        self.numbers = {2: self.two, 3: self.three, 5: self.five, 0: self.zero, 9: self.nine, 6: self.six}
         self.assign_rest()
+        self.unique_occurrences = self.count_unique_occurrences()
+        self.output_digits_list = self.find_output_digits()[0]
+        self.output_digits_string = self.find_output_digits()[1]
+        #print(self.output_digits_string)
     
     def count_unique_occurrences(self):
         count = 0
         for string in self.output_codes:
-            this_pattern = SignalPattern(string)
+            #print(string)
+            #print(self.digits) - this is the problem
+            this_pattern = SignalPattern(string, self.digits)
             if this_pattern.is_unique == True:
                 count += 1
         return count
@@ -110,7 +118,7 @@ class Display:
         digit_list = []
         digit_string = ""
         for string in self.output_codes:
-            this_pattern = SignalPattern(string)
+            this_pattern = SignalPattern(string, self.digits)
             digit_list.append(this_pattern.digit)
             digit_string += str(this_pattern.digit)
         return [digit_list, digit_string]
@@ -118,7 +126,7 @@ class Display:
     def assign_initial(self):
         #assign 1478 to strings in digits dict
         for string in self.patterns_list:
-            this_pattern = SignalPattern(string)
+            this_pattern = SignalPattern(string, self.digits)
             if this_pattern.is_unique == True:
                 self.digits[this_pattern.digit] = string
         for letter in self.letters:
@@ -138,7 +146,7 @@ class Display:
             #top (in 8 patterns) = in 7 and 8, not in 1 or 4
             elif (letter in self.digits[7]) and (letter in self.digits[8]) and (letter not in self.digits[1]) and (letter not in self.digits[4]):
                 self.positions["top"] = letter
-            #middle (in 7 patterns) = is in 4 (only middle and bottom are left, and bottom isn't in 4)
+            #middle (in 7 patterns) = is in the number 4 (only middle and bottom are left, and bottom isn't in 4)
             elif letter in self.digits[4]:
                 self.positions["middle"] = letter
             #bottom (in 7 patterns) = else
@@ -146,30 +154,52 @@ class Display:
                 self.positions["bottom"] = letter
     
     def assign_rest(self):
-        pass
-    #######################################assign numbers into dictionary based on position specs in init############################################
-
-
-
-        
+        #go through every string
+        for string in self.patterns_list:
+            #check the string against the letters for every number
+            for key, value in self.numbers.items():
+                if string not in self.digits.values():
+                    letter_match = True
+                    for letter in string:
+                        if letter not in value:
+                            letter_match = False
+                            break
+                    #if full match, assign string to number in dictionary and move on to next string
+                    #if not full match, check against the next number
+                    if letter_match == True:
+                        self.digits[key] = string
+                        break
+        #print(self.digits)
 
 example_display = Display(part2_example)
-print(example_display.patterns_list)
-print(example_display.digits)
-print(example_display.positions)
-#print(example_display.two)
+#print("Display:")
+#print(example_display.patterns_list)
+#print(example_display.digits)
+#print(example_display.positions)
+#print(example_display.numbers)
+
 def count_all_unique(input_list):
     count = 0
     for display in input_list:
         this_display = Display(display)
-        count += this_display.unique_occurrences
+        count += this_display.count_unique_occurrences()
     return count
+
+def sum_all_outputs(input_list):
+    sum = 0
+    for display in input_list:
+        this_display = Display(display)
+        sum += int(this_display.output_digits_string)
+    return sum
+
 
 #answer part 1
 unique_count = count_all_unique(working_list)
-#print(unique_count)
+print(unique_count)
 
 #answer part 2
+output_sum = sum_all_outputs(working_list)
+print(output_sum)
 
 
 
