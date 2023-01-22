@@ -3,7 +3,7 @@
 #low point = number that's lower than all adjacent points (up down left right)
 #risk level = height + 1
 
-with open(r"C:\Users\Tom.Brooks\OneDrive - BJSS Ltd\Documents\Coding\Coding\AoC-2021\Day_9_test.txt") as input_file:
+with open(r"C:\Users\Tom\OneDrive\Documents\Tom's Stuff\Hobbies\Coding\AoC-2021\Day_9_test.txt") as input_file:
     working_list = []
     for row in input_file:
         working_list.append(row.replace("\n",""))
@@ -45,3 +45,12 @@ def sum_risk(input_list):
 #answer part 1
 part_1 = sum_risk(working_list)
 print(part_1)
+
+#give each low point a separate number, then made it spread its own number until it hit a wall
+#if it's a low point, change its number in the original grid list to be 101, 102, 103 etc
+    #then can identify them using numbers > 100
+#make it spread its own number till it hits a wall
+    #for each number >100, look in all four directions and change any that aren't 9 to match it
+    #then repeat for the same number, until there are no new numbers to spread to
+#count the numbers of each number above 100, to find the size of each basin (dictionary?)
+#sort the values in the dictionary and count the three biggest ones
