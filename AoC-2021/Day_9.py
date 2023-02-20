@@ -3,7 +3,7 @@
 #low point = number that's lower than all adjacent points (up down left right)
 #risk level = height + 1
 
-with open(r"C:\Users\Tom\OneDrive\Documents\Tom's Stuff\Hobbies\Coding\AoC-2021\Day_9_test.txt") as input_file:
+with open(r"c:/Users/Tom.Brooks/OneDrive - BJSS Ltd/Documents/Coding/Coding/AoC-2021\Day_9_test.txt") as input_file:
     working_list = []
     for row in input_file:
         working_list.append(row.replace("\n",""))
@@ -32,7 +32,7 @@ example_point = Point(working_list, 0, 0)
 def sum_risk(input_list):
     running_total = 0
     row_ind = 0
-    for row in working_list:
+    for row in input_list:
         column_ind = 0
         for num in row:
             this_point = Point(working_list, row_ind, column_ind)
