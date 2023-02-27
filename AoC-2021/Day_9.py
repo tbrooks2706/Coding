@@ -6,26 +6,32 @@ import copy
 #risk level = height + 1
 
 with open(r"c:/Users/Tom.Brooks/OneDrive - BJSS Ltd/Documents/Coding/Coding/AoC-2021\Day_9_test.txt") as input_file:
+    init_list = []
     working_list = []
     for row in input_file:
-        working_list.append(row.replace("\n",""))
+        init_list.append(row.replace("\n",""))
+    for item in init_list:
+        temp_list = []
+        for char in item:
+            temp_list.append(int(char))
+        working_list.append(temp_list)
 #print(working_list)
 part_2_list = copy.deepcopy(working_list)
 print(part_2_list)
 
 class Point:
     def __init__(self, grid, row, column) -> None:
-        self.row = int(row)
-        self.column = int(column)
+        self.row = row
+        self.column = column
         self.grid = grid
-        self.height = int(grid[row][column])
+        self.height = grid[row][column]
         self.risk = self.height + 1
         self.last_row = self.row == len(grid) - 1
         self.last_column = self.column == len(grid[0]) - 1
-        self.up = lambda: int(self.grid[self.row-1][self.column]) if self.row != 0 else 99
-        self.down = lambda: int(self.grid[self.row+1][self.column]) if not self.last_row else 99
-        self.left = lambda: int(self.grid[self.row][self.column-1]) if self.column != 0 else 99
-        self.right = lambda: int(self.grid[self.row][self.column+1]) if not self.last_column else 99
+        self.up = lambda: self.grid[self.row-1][self.column] if self.row != 0 else 99
+        self.down = lambda: self.grid[self.row+1][self.column] if not self.last_row else 99
+        self.left = lambda: self.grid[self.row][self.column-1] if self.column != 0 else 99
+        self.right = lambda: self.grid[self.row][self.column+1] if not self.last_column else 99
         self.adjacents = [self.up(), self.down(), self.left(), self.right()]
         self.low_point = lambda: True if self.height < min(self.adjacents) else False
 
