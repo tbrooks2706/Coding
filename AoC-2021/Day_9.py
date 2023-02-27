@@ -1,3 +1,5 @@
+import copy
+
 #numbers are a heightmap of the ocean floor
 #9 highest 0 lowest
 #low point = number that's lower than all adjacent points (up down left right)
@@ -8,6 +10,8 @@ with open(r"c:/Users/Tom.Brooks/OneDrive - BJSS Ltd/Documents/Coding/Coding/AoC-
     for row in input_file:
         working_list.append(row.replace("\n",""))
 #print(working_list)
+part_2_list = copy.deepcopy(working_list)
+print(part_2_list)
 
 class Point:
     def __init__(self, grid, row, column) -> None:
@@ -47,6 +51,30 @@ part_1 = sum_risk(working_list)
 print(part_1)
 
 #give each low point a separate number, then made it spread its own number until it hit a wall
+# def apply_low_point_ids(input_list):
+#     target_id = 101
+#     for row in input_list:
+#         column_ind = 0
+#         for num in row:
+#         #     this_point = Point(working_list, row_ind, column_ind)
+#         #     if this_point.low_point() == True:
+#         #         running_total += this_point.risk
+#         #     column_ind += 1
+#         # row_ind += 1
+
+# def spread_number(input_list):
+#     running_total = 0
+#     row_ind = 0
+#     for row in input_list:
+#         column_ind = 0
+#         for num in row:
+#             this_point = Point(working_list, row_ind, column_ind)
+#             if this_point.low_point() == True:
+#                 running_total += this_point.risk
+#             column_ind += 1
+#         row_ind += 1
+#     return running_total
+
 #if it's a low point, change its number in the original grid list to be 101, 102, 103 etc
     #then can identify them using numbers > 100
 #make it spread its own number till it hits a wall
