@@ -1,5 +1,5 @@
 #input is list of passwords according to corrupted database
-#first bit before colon is password policy (eg. 1-3 a means pass needs to contain 1-3 "a" chars)
+#first bit before colon is password policy (eg. 1-3 a means pass needs to contain 1-3 "a" chars) - in part 1, rules are different in part 2
 #second bit after colon is password
 #how many passwords in the input are valid?
 
@@ -15,12 +15,14 @@ class Password:
         self.is_valid_one = self.check_valid_one()
         self.is_valid_two = self.check_valid_two()
 
+    #part 1 rules
     def check_valid_one(self):
         char_count = self.password.count(self.pass_char)
         if self.min_char <= char_count <= self.max_char:
             return True
         return False
     
+    #part 2 rules
     def check_valid_two(self):
         match_count = 0
         for ind in self.check_index:
@@ -30,6 +32,7 @@ class Password:
             return True
         return False
 
+#get data into usable format
 def format_list(input_list):
     new_list = []
     for string in input_list:
@@ -41,6 +44,7 @@ def format_list(input_list):
         new_list.append(clean)
     return new_list
 
+#use class to count valid passwords
 def count_valid(input_list):
     counter = [0, 0]
     for pwd in input_list:
