@@ -3,29 +3,127 @@ from copy import deepcopy
 
 #https://adventofcode.com/2020/day/4
 
-# init_list = general_functions.read_file(r"C:\Users\Tom.Brooks\OneDrive - BJSS Ltd\Documents\Coding\Coding\AoC-2020\Day_4_test.txt")
-# print(init_list)
+########THIS WOULD MAKE GOOD UNIT TEST PRACTICE########################
+class Field:
+    required = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
+    optional = ["cid"]
+    hcl_chars = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "a", "b", "c", "d", "e", "f"]
+    ecl_values = ["amb", "blu", "brn", "gry", "grn", "hzl", "oth"]
+    byr_min = 1920
+    byr_max = 2002
+    iyr_min = 2010
+    iyr_max = 2020
+    eyr_min = 2020
+    eyr_max = 2030
+    hgt_in_min = 59
+    hgt_in_max = 76
+    hgt_cm_min = 150
+    hgt_cm_max = 193
+    yr_len = 4
+    pid_len = 9
+    hcl_len = 7
 
-# #format data
-# def format_batch_file(input_list):
-#     new_list = []
-#     for line in input_list:
-#         new_list.append(line.split())
-#     #range starts at 1 to skip first line
-#     for num in range(1, len(new_list)):
-#         counter = 0
-#         while counter < 1:
-#             if new_list[num] != [] and new_list[num-1] != []:
-#                 new_list[num-1] += new_list[num]
-#                 new_list.pop(num)
-#                 counter += 1
-#             else:
-#                 pass
-#                 counter += 1
-#     return new_list
+    def __init__(self, field_name, field_value) -> None:
+        self.name = field_name
+        self.value = field_value
+        self.required = field_name in Field.required
+        self.valid = self.check_validity()
 
-#working_list = format_batch_file(init_list)
-#print(working_list)
+    def check_validity(self):
+        #this try/except feels quick and dirty - assumes that if any of the below throws any error, it's because the field is invalid not because the code is wrong
+        #but it gave the right answer!
+        try:
+            if self.value in (None, "") and self.required == True:
+                return False
+            if self.name == "byr":
+                num_byr = int(self.value)
+                if Field.byr_min <= num_byr <= Field.byr_max and len(self.value) == Field.yr_len:
+                    return True
+                return False
+            if self.name == "iyr":
+                num_iyr = int(self.value)
+                if Field.iyr_min <= num_iyr <= Field.iyr_max and len(self.value) == Field.yr_len:
+                    return True
+                return False
+            if self.name == "eyr":
+                num_eyr = int(self.value)
+                if Field.eyr_min <= num_eyr <= Field.eyr_max and len(self.value) == Field.yr_len:
+                    return True
+                return False
+            if self.name == "hgt":
+                unit = self.value[-2:]
+                num_hgt = int(self.value[:-2])
+                if unit == "cm" and Field.hgt_cm_min <= num_hgt <= Field.hgt_cm_max:
+                    return True
+                if unit == "in" and Field.hgt_in_min <= num_hgt <= Field.hgt_in_max:
+                    return True
+                return False
+            if self.name == "hcl":
+                if self.value[0] == "#" and len(self.value) == Field.hcl_len:
+                    counter = 0
+                    for char in self.value[1:]:
+                        if char in Field.hcl_chars:
+                            counter += 1
+                    if counter == 6:
+                        return True
+                return False
+            if self.name == "ecl":
+                if self.value in Field.ecl_values:
+                    return True
+                return False
+            if self.name == "pid":
+                if len(self.value) == Field.pid_len:
+                    #test to see whether string is all digits
+                    try:
+                        num = int(self.value)
+                    #if not, field invalid
+                    except:
+                        return False
+                    #if no exception thrown, field valid
+                    else:
+                        return True
+                return False
+            if self.name == "cid":
+                return True
+        except:
+            return False       
+
+class Passport:
+    def __init__(self, input_dict) -> None:
+        self.input_dict = input_dict
+        self.byr = input_dict.get("byr")
+        self.iyr = input_dict.get("iyr")
+        self.eyr = input_dict.get("eyr")
+        self.hgt = input_dict.get("hgt")
+        self.hcl = input_dict.get("hcl")
+        self.ecl = input_dict.get("ecl")
+        self.pid = input_dict.get("pid")
+        self.cid = input_dict.get("cid")
+        self.full_dict = {'byr': self.byr, 'iyr': self.iyr, 'eyr': self.eyr, 'hgt': self.hgt, 'hcl': self.hcl, 'ecl': self.ecl, 'pid': self.pid, 'cid': self.cid}
+        self.valid_1 = self.check_validity_1()
+        self.valid_2 = self.check_validity_2()
+    
+    def check_validity_1(self):
+        for field, value in self.full_dict.items():
+            this_field = Field(field, value)
+            if this_field.required == True and value == None:
+                return False
+        return True
+    
+    def check_validity_2(self):
+        for field, value in self.full_dict.items():
+            this_field = Field(field, value)
+            if this_field.valid == False:
+                return False
+        return True
+
+def count_valid_passports(input_list):
+    counter = 0
+    for item in input_list:
+        this_passport = Passport(item)
+        if this_passport.valid_2 == True:
+            counter += 1
+    return counter
 
 def read_file(file_path):
     with open(file_path) as txt_file:
@@ -53,59 +151,8 @@ def read_file(file_path):
             dict_list.append(dct)
     return dict_list
 
-working_list = read_file(r"C:\Users\Tom.Brooks\OneDrive - BJSS Ltd\Documents\Coding\Coding\AoC-2020\Day_4_test.txt")
-#print(working_list)
+working_list = read_file(r"C:\Users\Tom.Brooks\OneDrive - BJSS Ltd\Documents\Coding\Coding\AoC-2020\Day_4.txt")
 
-#count valid passports in batch file (input)
-#valid = contains all required fields (byr, iyr, eyr, hgt, hcl, ecl, pid)
-#temporarily ignore missing cid fields - treat it as optional
-#passports in file separated by blank lines
-
-#parameterise whether fields are optional or not
-
-#############PART 2 INVOLVES FIELD SPECIFIC VALIDATION#################
-class Field:
-    required = ["byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid"]
-    optional = ["cid"]
-
-    def __init__(self, field_name) -> None:
-        self.name = field_name
-        self.required = field_name in Field.required
-
-class Passport:
-    def __init__(self, input_dict) -> None:
-        self.input_dict = input_dict
-        self.byr = input_dict.get("byr")
-        self.iyr = input_dict.get("iyr")
-        self.eyr = input_dict.get("eyr")
-        self.hgt = input_dict.get("hgt")
-        self.hcl = input_dict.get("hcl")
-        self.ecl = input_dict.get("ecl")
-        self.pid = input_dict.get("pid")
-        self.cid = input_dict.get("cid")
-        self.full_dict = {'byr': self.byr, 'iyr': self.iyr, 'eyr': self.eyr, 'hgt': self.hgt, 'hcl': self.hcl, 'ecl': self.ecl, 'pid': self.pid, 'cid': self.cid}
-        self.valid = self.check_validity()
-    
-    def check_validity(self):
-        for field, value in self.full_dict.items():
-            this_field = Field(field)
-            if this_field.required == True and value == None:
-                return False
-        return True
-
-# example_passport = Passport({'iyr': '2013', 'ecl': 'amb', 'cid': '350', 'eyr': '2023', 'pid': '028048884', 'hcl': '#cfa07d', 'byr': '1929'})
-# print(example_passport.full_dict)
-# print(example_passport.valid)
-
-def count_valid_passports(input_list):
-    counter = 0
-    for item in input_list:
-        this_passport = Passport(item)
-        if this_passport.valid == True:
-            counter += 1
-    return counter
-
-#part 1 answer
-valid_count_1 = count_valid_passports(working_list)
-print(valid_count_1)
-
+#adjust if statement in count_valid_passports, to switch between part 1 and 2 answers
+valid_count = count_valid_passports(working_list)
+print(valid_count)
