@@ -30,9 +30,6 @@ class Field:
         self.valid = self.check_validity()
 
     def check_validity(self):
-        #this try/except feels quick and dirty - assumes that if any of the below throws any error, it's because the field is invalid not because the code is wrong
-        #but it gave the right answer!
-        try:
             if self.value in (None, "") and self.required == True:
                 return False
             if self.name == "byr":
@@ -51,13 +48,18 @@ class Field:
                     return True
                 return False
             if self.name == "hgt":
-                unit = self.value[-2:]
-                num_hgt = int(self.value[:-2])
-                if unit == "cm" and Field.hgt_cm_min <= num_hgt <= Field.hgt_cm_max:
-                    return True
-                if unit == "in" and Field.hgt_in_min <= num_hgt <= Field.hgt_in_max:
-                    return True
-                return False
+                #exception handling for if value doesn't follow the "some digits then two letters" format eg. it's just the digits
+                try:
+                    unit = self.value[-2:]
+                    num_hgt = int(self.value[:-2])
+                except:
+                    return False
+                else:
+                    if unit == "cm" and Field.hgt_cm_min <= num_hgt <= Field.hgt_cm_max:
+                        return True
+                    if unit == "in" and Field.hgt_in_min <= num_hgt <= Field.hgt_in_max:
+                        return True
+                    return False
             if self.name == "hcl":
                 if self.value[0] == "#" and len(self.value) == Field.hcl_len:
                     counter = 0
@@ -84,9 +86,7 @@ class Field:
                         return True
                 return False
             if self.name == "cid":
-                return True
-        except:
-            return False       
+                return True     
 
 class Passport:
     def __init__(self, input_dict) -> None:
