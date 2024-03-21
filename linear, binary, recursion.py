@@ -59,7 +59,7 @@ def binary_search(data, target):
     stop = False
     while stop == False:
         mid = min + math.floor((max - min) / 2)
-        guess = data[mid]
+        guess = sorted_list[mid]
         if guess == target:
             ind = mid
             stop = True
