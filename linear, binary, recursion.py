@@ -1,4 +1,5 @@
 import math
+import random
 
 def find_factorial_iter(num):
     if type(num) is not int or num < 1:
@@ -15,15 +16,14 @@ def find_factorial_iter(num):
 #print(find_factorial_iter(11))
 
 def find_factorial_rec(num):
-    def do_recursion(running_total, multiplier):
-        if multiplier == 1:
-            return running_total
-        else:
-            do_recursion(running_total * multiplier, multiplier - 1)
-    
-    return do_recursion(num, num - 1)
+    if num == 1:
+        return 1
+    else:
+        return num * find_factorial_rec(num - 1)
 
-#print(find_factorial_rec(5))
+# factorial(n) = n × factorial(n – 1)
+
+print(find_factorial_rec(5))
 
 def countdown(n):
     print(n)
@@ -38,7 +38,9 @@ def countdown(n):
 
 #countdown(5)
 
-primes = [2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89, 97]
+data = [random.randint(1, 50000) for x in range(1, 500)]
+#print(data)
+
 #return index number of data in an array
 def linear_search(data, target):
     ind = 0
@@ -48,7 +50,7 @@ def linear_search(data, target):
         ind += 1
     return None
 
-#print(linear_search(primes, 97))
+print("Linear",linear_search(data, 500))
 
 #return index number of data in an array
 def binary_search(data, target):
@@ -72,4 +74,4 @@ def binary_search(data, target):
             min = mid + 1
     return ind
 
-print(binary_search(primes, 17))
+print("Binary",binary_search(data, 500))
